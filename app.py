@@ -1,32 +1,21 @@
 from flask import Flask, render_template, jsonify
+from database import engine
+from sqlalchemy import text
 
 app = Flask(__name__)
 
-JOBS = [{
-  'id': 1,
-  'title': 'Data analyst',
-  'location': 'Nairobi, Kenya',
-  'salary': '10k'
-}, {
-  'id': 2,
-  'title': 'Data scientist',
-  'location': 'Limuru, Kenya',
-}, {
-  'id': 3,
-  'title': 'Front end',
-  'location': 'Kisumu, Kenya',
-  'salary': '100k'
-}, {
-  'id': 4,
-  'title': 'Backend',
-  'location': 'Nakuru, Kenya',
-  'salary': '10000k'
-}]
+def load_jobs_from_db():
+  with engine.connect() as conn:
+    result = conn.execute(text('Select * from jobs'))
+  result_all = result.all()
+  jobs = [u._asdict() for u in result_all]
+  return jobs
 
 
 @app.route("/")
 def hellow_world():
-  return render_template('home.html', jobs=JOBS)
+  jobs = load_jobs_from_db
+  return render_template('home.html', jobs=jobs)
 
 
 @app.route("/api/jobs")

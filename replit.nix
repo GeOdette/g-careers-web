@@ -1,5 +1,8 @@
 { pkgs }: {
   deps = [
+    pkgs.nano
+    pkgs.sudo
+    pkgs.mariadb
     pkgs.python310Full
     pkgs.replitPackages.prybar-python310
     pkgs.replitPackages.stderred
